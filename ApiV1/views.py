@@ -5,13 +5,13 @@ from django.http import HttpResponseRedirect,HttpResponse
 from json import dumps
 from assets.models import Service_data
 from re import sub
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group,User
 from rest_framework.permissions import BasePermission
 
 class MyPers(BasePermission):
     def has_permission(self, request, view):
         user_per = Group.objects.get(user=request.user)
-        if user_per == 'admin' or request.method == 'GET':
+        if str(user_per) == 'admin' or request.method == 'GET':
             return True
         else:
             return False
@@ -24,6 +24,21 @@ class LoginAuth(APIView):
             if user.is_active:
                 login(request,user)
                 return HttpResponseRedirect('/dashboard/')
+
+class UserInfo(APIView):
+
+    permission_classes = [MyPers]
+
+    def get(self,request,*args,**kwargs):
+
+        if request.GET.get('type') is not None:
+
+            user_data = list(User.objects.values())
+            print(user_data)
+            return HttpResponse(str(user_data))
+        else:
+            return render(request,'user_list.html',locals())
+
 
 class ServiceInfo(APIView):
 

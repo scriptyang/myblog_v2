@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8"/>
 
+
     {% block head_js %}
+        <!--
         <style>
             td {
                 white-space: nowrap;
@@ -30,6 +32,7 @@
             }
 
         </style>
+        !-->
 
     {% endblock %}
 
@@ -44,13 +47,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
+                        <!--
                         <div class="header">
 
                             <button type="button" id="post_data" class="btn btn-primary" style="margin-bottom: 15px;">信息更新</button>
                         </div>
                         <div class="toolbar">
-                            <!--        Here you can write extra buttons/actions for the toolbar              -->
-                        </div>
+                                  Here you can write extra buttons/actions for the toolbar
+                        </div>  !-->
 
                         <table id="bootstrap-table" data-show-export="true"
                class="table" style="table-layout: fixed;">
@@ -268,7 +272,7 @@
                                     },
                                     error: function(data){
                                         if (data.status == 403){
-                                            swal("对不起，您没有编辑权限", "请联系管理员增加权限", "error");
+                                            swal("对不起，您没有删除权限", "请联系管理员增加权限", "error");
                                         }
 
                                     },
@@ -288,7 +292,7 @@
                         values: [row.name]
                     });
                     $.ajax({
-                        url: "/api/v1/Service_info/",
+                        url: "{% url 'service_info' %}",
                         type: 'delete',
                         dataType: 'text',
                         data: {
@@ -305,13 +309,19 @@
                         }
                     );
                         },
+                        error: function(data){
+                                        if (data.status == 403){
+                                            swal("对不起，您没有编辑权限", "请联系管理员增加权限", "error");
+                                        }
+
+                                    },
                     })
                 }
             };
 
             $table.bootstrapTable({
                 toolbar: ".toolbar",
-                url: '/api/v1/Service_info/',
+                url: "{% url 'service_info' %}",
                 method: 'get',
                 queryParams:{"type":"ListData"},
                 clickToSelect: true,
@@ -358,16 +368,19 @@
     <script type="text/javascript">
     $("#post_data").click(function() {
             $.ajax({
-                        url: "/api/v1/Service_info/",
+                        url: "{% url 'service_info' %}",
                         type: 'delete',
                         dataType: 'text',
                         data: {
                             id: 'winc00034',
                             'csrfmiddlewaretoken':$('[name="csrfmiddlewaretoken"]').val()
                         },
-                error:function (d) {
-                    console.log(d);
-                }
+                error: function(data){
+                                        if (data.status == 403){
+                                            swal("对不起，您没有此权限", "请联系管理员增加权限", "error");
+                                        }
+
+                                    },
                     })
 
                 })

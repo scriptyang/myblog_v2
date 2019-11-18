@@ -208,7 +208,7 @@
                             });
 
                             $.ajax({
-                                url: "{{ request.path }}",
+                                url: '{% url "user_info" %}',
                                 type: "post",
                                 dataType: 'text',
                                 data: {
@@ -258,7 +258,7 @@
                     });
 
                     $.ajax({
-                        url: "{{ request.path }}",
+                        url: '{% url "user_info" %}',
                         type: 'post',
                         dataType: 'strings',
                         data: {
@@ -270,9 +270,9 @@
             };
             $table.bootstrapTable({
                 toolbar: ".toolbar",
-                url: '{{ request.path }}',
+                url: '{% url "user_info" %}',
                 method: 'get',
-                queryParams: {"request_type": "get_data"},
+                queryParams: {"type": "ListData"},
                 clickToSelect: true,
                 showRefresh: true,
                 search: true,

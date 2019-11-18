@@ -18,5 +18,5 @@ from django.urls import path,include
 
 urlpatterns = [
     path('',include('assets.urls')),
-    path('api/v1/',include('ApiV1.urls'))
+    path('v1/',include('ApiV1.urls'))
 ]
