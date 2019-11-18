@@ -33,8 +33,8 @@ class ServiceInfo(APIView):
 
         data = eval(sub('\[|\]', '',str(dict(request.POST))))
         res = Service_data.objects.filter(name=data['name']).update(**data)
-        print(res)
-        return HttpResponse('更新成功')
+
+        return HttpResponse(res)
 
     def delete(self, request, *args, **kwargs):
         drop_data = Service_data.objects.get(name=request.POST.get('id')).delete()
