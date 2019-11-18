@@ -34,7 +34,7 @@ class UserInfo(APIView):
         if request.GET.get('type') is not None:
 
             user_data = list(User.objects.values())
-            print(user_data)
+
             return HttpResponse(str(user_data))
         else:
             return render(request,'user_list.html',locals())
