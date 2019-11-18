@@ -266,6 +266,12 @@
 
                                         }
                                     },
+                                    error: function(data){
+                                        if (data.status == 403){
+                                            swal("对不起，您没有编辑权限", "请联系管理员增加权限", "error");
+                                        }
+
+                                    },
 
                                 }
                             );

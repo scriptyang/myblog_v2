@@ -5,17 +5,18 @@ from django.http import HttpResponseRedirect,HttpResponse
 from json import dumps
 from assets.models import Service_data
 from re import sub
+from django.contrib.auth.models import Group
 from rest_framework.permissions import BasePermission
-from django.contrib.auth.models import User,Group
 
-class MyPermission(BasePermission):
-
+class MyPers(BasePermission):
     def has_permission(self, request, view):
-
-        return True
+        user_per = Group.objects.get(user=request.user)
+        if user_per == 'admin' or request.method == 'GET':
+            return True
+        else:
+            return False
 
 class LoginAuth(APIView):
-
 
     def post(self,request,*args,**kwargs):
         user = authenticate(username=request.POST.get('username'),password=request.POST.get('password'))
@@ -26,9 +27,11 @@ class LoginAuth(APIView):
 
 class ServiceInfo(APIView):
 
-    permission_classes = [MyPermission,]
+
+    permission_classes = [MyPers]
 
     def get(self,request,*args,**kwargs):
+
         if request.GET.get('type') is not None:
             service_data = dumps(list(Service_data.objects.values()))
             return HttpResponse(str(service_data))
@@ -45,6 +48,7 @@ class ServiceInfo(APIView):
     def delete(self, request, *args, **kwargs):
         drop_data = Service_data.objects.get(name=request.POST.get('id')).delete()
         return HttpResponse("ok")
+
 
 
 # Create your views here.
