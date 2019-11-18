@@ -7,7 +7,6 @@ from assets.models import Service_data
 from re import sub
 from rest_framework.permissions import BasePermission
 from django.contrib.auth.models import User,Group
-from assets.conf import conf
 
 class MyPermission(BasePermission):
 
