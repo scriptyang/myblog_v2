@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>{{ set_var.site_name }}</title>
+    <title> </title>
 
     {% block head_js %}
         <script src='/static/js/echarts.js'></script>
@@ -80,10 +80,8 @@
 
             <div class="row">
 
-
                 <div class="col-md-12">
                     <div class="card">
-
                         <div id="main">
                             <div class="chart" style="cursor:default" title="主机数量"></div>
                             <div class="chart" title="任务执行数量"></div>
@@ -132,7 +130,7 @@
                     show: false
                 },
                 label: {
-                    formatter: '主机：{{ var.service_num }}',
+                    formatter: '主机：{{ service_num }}',
                     textStyle: {
                         fontFamily: 'Lobster Two'
                     }
@@ -452,7 +450,7 @@ var convertData = function (data) {
 option = {
     backgroundColor: '#fff',
     title: {
-        text: '设备分布',
+        text: '设 备 分 布 ',
         x:'center',
         textStyle: {
             color: '#000000'

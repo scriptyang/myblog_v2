@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %} {{ set_var.site_name }} {% endblock %}</title>
+    <title>{% block title %} 后台管理 {% endblock %}</title>
 
     <link rel="icon" href="/static/bitbug_favicon.ico" type="image/x-icon" />
     <!-- Bootstrap core /static/css     -->
@@ -23,9 +23,9 @@
     {% endblock %}
 </head>
 <body>
+
 <div class="wrapper">
     <div class="sidebar" data-image="/static/picture/user.png">
-
 
         <div class="logo">
             <a href="/dashboard/" class="logo-text">
@@ -105,7 +105,6 @@
                         </ul>
                     </div>
                 </li>
-            {% if 'user_url' in var %}
                 <li>
                     <a data-toggle="collapse" href="#UserExamples">
                         <i class="pe-7s-user"></i>
@@ -115,13 +114,10 @@
                     </a>
                     <div class="collapse" id="UserExamples">
                         <ul class="nav">
-                            {% for key, value in var.user_url.items %}
-                                <li><a href="/{{ key }}/">{{ value }}</a></li>
-                            {% endfor %}
+                                <li><a href="/user_list/">用户列表</a></li>
                         </ul>
                     </div>
                 </li>
-            {% endif %}
             <li>
                     <a data-toggle="collapse" href="#TxtExamples">
                         <i class="pe-7s-note2"></i>
@@ -131,9 +127,7 @@
                     </a>
                     <div class="collapse" id="TxtExamples">
                         <ul class="nav">
-                            {% for key, value in var.txt_url.items %}
-                                <li><a href="/{{ key }}/">{{ value }}</a></li>
-                            {% endfor %}
+                                <li><a href="/txt_list/">文 档</a></li>
                         </ul>
                     </div>
                 </li>
@@ -146,9 +140,8 @@
                     </a>
                     <div class="collapse" id="TempExamples">
                         <ul class="nav">
-                            {% for key, value in var.temp_url.items %}
-                                <li><a href="/{{ key }}/">{{ value }}</a></li>
-                            {% endfor %}
+                                <li><a href="/info_temp/">信 息</a></li>
+                                <li><a href="/task_temp/">任务工单</a></li>
                         </ul>
                     </div>
                 </li>

@@ -1,14 +1,11 @@
 #coding: utf-8
 from django.shortcuts import render
 from django.http import HttpResponseRedirect,HttpResponse
-from .models import Settings_cmdb,Content
+from .models import Settings_cmdb,Content,Service_data
 from .conf import conf
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User,Group
 from json import dumps
-
-
-
 
 def ajax_request(request,models_name):
     if request.GET.get('request_type') == 'get_data':
@@ -151,7 +148,6 @@ def request_html(request,html_name,err='None'):
 
             ]
     err =  err
-    var = conf
     group_list = [y for y in Group.objects.values()]
     set_var = Settings_cmdb.objects.values()[0]
 
@@ -171,8 +167,17 @@ def index(request):
     登陆页面
 
     '''
+    map = [
+        {'name': "海门", 'value': 9},
+        {'name': "鄂尔多斯", 'value': 12},
+        {'name': "招远", 'value': 50},
+        {'name': "舟山", 'value': 12},
+        {'name': "齐齐哈尔", 'value': 14},
 
-    return request_html(request,'index')
+    ]
+    service_num = Service_data.objects.all().count()
+
+    return render(request, 'index.html', locals())
 
 def user_logout(request):
     logout(request)

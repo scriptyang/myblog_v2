@@ -1,26 +1,35 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from django.views.generic.base import View
-from rest_framework import mixins,generics
 from django.contrib.auth import authenticate,login
 from django.http import HttpResponseRedirect,HttpResponse
 from json import dumps
 from assets.models import Service_data
 from re import sub
+from rest_framework.permissions import BasePermission
+from django.contrib.auth.models import User,Group
+from assets.conf import conf
+
+class MyPermission(BasePermission):
+
+    def has_permission(self, request, view):
+
+        print(Group.objects.get(user=request.user))
+
+        return 'sdf'
 
 class LoginAuth(APIView):
 
 
     def post(self,request,*args,**kwargs):
-
         user = authenticate(username=request.POST.get('username'),password=request.POST.get('password'))
-        print(user)
         if user is not None:
             if user.is_active:
                 login(request,user)
                 return HttpResponseRedirect('/dashboard/')
 
 class ServiceInfo(APIView):
+
+    permission_classes = [MyPermission,]
 
     def get(self,request,*args,**kwargs):
         if request.GET.get('type') is not None:
