@@ -1,7 +1,7 @@
 #coding: utf-8
 from django.shortcuts import render
 from django.http import HttpResponseRedirect,HttpResponse
-from .models import Settings_cmdb,Content,Service_data
+from .models import Content,Service_data
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User,Group
 from json import dumps
@@ -134,25 +134,6 @@ def ajax_request(request,models_name):
             return HttpResponse(1)
         return HttpResponse(0)
 
-# 返回html 文件 模板 函数
-def request_html(request,html_name,err='None'):
-
-
-    map = [
-                {'name': "海门", 'value': 9},
-                {'name': "鄂尔多斯", 'value': 12},
-                {'name': "招远", 'value': 50},
-                {'name': "舟山", 'value': 12},
-                {'name': "齐齐哈尔", 'value': 14},
-
-            ]
-    err =  err
-    group_list = [y for y in Group.objects.values()]
-    set_var = Settings_cmdb.objects.values()[0]
-
-    return render(request, html_name + '.html', locals())
-
-
 #默认页面及认证页面和跳转
 def user_login(request):
 
@@ -182,41 +163,33 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
 
-def service_html(request):
-    '''
-    服务信息表格获取信息、删除、编辑
-    '''
-
-
-    return request_html(request, 'service_info')
-
 def settings(request):
     '''
     设置页面
     '''
-    err ='None'
+    err ={'err':'None'}
     if request.method == "POST":
         post_data = str(dict(request.POST))
         post_data = post_data.replace('[', '')
         post_data = eval(post_data.replace(']', ''))
-        Settings_cmdb.objects.update(**post_data)
+
         print(request.POST.get('image'))
         err = '成功：数据配置更新完成'
-    return request_html(request,'settings',err)
+    return render(request,'settings.html',err)
 
 def set_passwd(request):
     '''
     密码修改
     '''
     if request.method == 'GET':
-        return request_html(request,'settings')
+        return render(request,'settings.html')
 
     if request.method == 'POST':
 
         if request.POST.get('set_passwd') != request.POST.get('ok_passwd') or request.POST.get('set_passwd') == '':
 
-            pass_err = '错误：两次输入的密码不一致，请重新输入'
-            return  request_html(request,'settings',pass_err)
+            err = '错误：两次输入的密码不一致，请重新输入'
+            return  render(request,'settings.html',locals())
         u = User.objects.get(username=request.user)
         u.set_password(request.POST.get('set_passwd'))
         u.save()
@@ -226,7 +199,7 @@ def set_passwd(request):
 
 def task_temp(request):
 
-    return request_html(request,'task_temp')
+    return render(request,'task_temp.html')
 
 def user_html(request):
     '''
@@ -290,11 +263,11 @@ def user_html(request):
                 return HttpResponse(1)
             return HttpResponse(g_update)
 
-    return request_html(request,'user_list')
+    return render(request,'user_list.html')
 
 def info_temp(request):
 
-    return request_html(request,'info_temp')
+    return render(request,'info_temp.html')
 
 
 def txt_html(request):
@@ -320,12 +293,11 @@ def txt_html(request):
             Content.objects.filter(id=request.POST.get('id')).delete()
             return HttpResponse('ok')
     elif request.path == '/file_create/':
-        return  request_html(request,'file')
-    return request_html(request,'txt_list')
+        return  render(request,'file.html')
+    return render(request,'txt_list.html')
 
 def file_html(request,file_id):
-    set_var = Settings_cmdb.objects.values()[0]
-    var = conf
+
     if request.user.is_authenticated:
         file_content = Content.objects.get(id=file_id).file_content
         file_name = Content.objects.get(id=file_id).file_name

@@ -12,9 +12,7 @@ class MyPermission(BasePermission):
 
     def has_permission(self, request, view):
 
-        print(Group.objects.get(user=request.user))
-
-        return 'sdf'
+        return True
 
 class LoginAuth(APIView):
 
