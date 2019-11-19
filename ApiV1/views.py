@@ -29,15 +29,49 @@ class UserInfo(APIView):
 
     permission_classes = [MyPers]
 
+    '''    def dispatch(self, request, *args, **kwargs):
+        
+
+        for g in group_list:
+            print(g.get("name"))
+
+        result = super(UserInfo,self).dispatch(request, *args, **kwargs)
+        return result'''
+
+
     def get(self,request,*args,**kwargs):
+        group_list = list(Group.objects.values())
 
         if request.GET.get('type') is not None:
+            user_dict = {}
+            user_data = []
 
-            user_data = list(User.objects.values())
-
-            return HttpResponse(str(user_data))
+            for l in list(User.objects.values()):
+                a = User.objects.get(username=l.get('username'))
+                user_dict['username'] = l.get('username')
+                user_dict['email'] = l.get('email')
+                user_dict['groups'] = a.groups.get().name
+                user_data.append(user_dict)
+                user_dict = {}
+            return HttpResponse(str(dumps(user_data)))
         else:
             return render(request,'user_list.html',locals())
+
+    def put(self,request,*args,**kwargs):
+        data = eval(sub('\[|\]', '', str(dict(request.POST))))
+        u = User.objects.get(username=data.get('username'),email=data.get('email'))
+        g = Group.objects.get(name=data.get('groups'))
+        u.groups.clear()
+        u.groups.add(g.id)
+        return HttpResponse(1)
+
+    def post(self,request,*args,**kwargs):
+        data = eval(sub('\[|\]', '', str(dict(request.POST))))
+        u_count = User.objects.filter(username=data.get('username')).count()
+        if u_count == 0:
+            print(data)
+            User.objects.create_superuser(**data)
+        return HttpResponse(u_count)
 
 
 class ServiceInfo(APIView):

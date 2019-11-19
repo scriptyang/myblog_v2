@@ -160,45 +160,42 @@
                                 '                            <div class="content">\n' +
                                 '\n' +
 
-                                {% for key,value in var.user_structure.items %}
+
                                     '                                    <div class="row">\n' +
                                     '                                        <div class="col-md-8">\n' +
                                     '                                            <div class="form-group">\n' +
-                                    '                                                <label>{{ value }}</label>\n' +
-                                    {% if key in 'groups' %}
-                                        '                                                <input type="text" readonly="readonly" class="form-control" id="{{ key }}" value="'
-                                        +row['{{ key }}']+ '">\n' +
-                                    {% else %}
-                                        '                                                <input type="text" class="form-control" id="{{ key }}" value="'
-                                        +row['{{ key }}']+ '">\n' +
-                                    {% endif %}
+                                    '                                                <label>用户名</label>\n' +
+
+                                        '                                                <input type="text" readonly="readonly" class="form-control" id="username" value="'
+                                        +row['username']+ '">\n' +
+                                     '<label>邮箱地址</label>\n' +
+
+                                        '                                                <input type="text" class="form-control" id="email" value="'
+                                        +row['email']+ '">\n' +
+
                                     '                                            </div>\n' +
                                     '                                        </div>\n' +
                                     '\n' +
                                     '                                    </div>\n' +
-                                    {% if key in 'groups' %}
+
                                         '                                    <div class="row">\n' +
                                         '                                        <div class="col-md-8">\n' +
                                         '                                            <div class="form-group">\n' +
                                         '                                                <label>用户组选择</label>\n' +
-                                        '<select multiple="multiple" name="group_list" class="form-control">\n'+
+                                        '<select id="group_list" name="group_list" class="form-control">\n'+
                                         {% for g in group_list %}
-                                            '  <option readonly="readonly"value="{{ g.name }}">{{ g.name }}</option>\n'+
+                                            '  <option readonly="readonly" id="options">{{ g.name }}</option>\n'+
                                         {%  endfor %}
                                         '</select>'+
                                         '                                            </div>\n' +
                                         '                                        </div>\n' +
                                         '\n' +
                                         '                                    </div>\n' +
-                                    {% else %}
-
-                                    {% endif %}
-                                {% endfor %}
 
                                 '                                    <div class="clearfix"></div>\n' +
                                 '                            </div>\n' +
                                 '                        </div>',
-                            showCancelButton: true,
+                            showCancelButton: true
                         },
                         function () {
 
@@ -209,14 +206,12 @@
 
                             $.ajax({
                                 url: '{% url "user_info" %}',
-                                type: "post",
+                                type: "put",
                                 dataType: 'text',
                                 data: {
-                                    request_type: 'edit_data',
-                                    post_group: selectedValues.join(),
-                            {% for k,v in var.user_structure.items  %}
-                                {{ k }}: document.getElementById('{{ k }}').value,
-                            {% endfor %}
+                                    groups: selectedValues.join(),
+                                    username: document.getElementById('username').value,
+                                    email: document.getElementById('email').value,
                         },
 
                             success: function f(data) {
@@ -224,7 +219,7 @@
                                 if (data > 0) {
                                     var notify = $.notify({
                                             icon: 'fa fa-server',
-                                            message: "正在修改数据 ",
+                                            message: "正在修改用户所属组 ",
                                         },
                                         {
                                             type: 'info'
@@ -233,7 +228,7 @@
 
                                     setTimeout(function () {
                                         notify.update('type', 'success')
-                                        notify.update('message', "数据修改成功");
+                                        notify.update('message', "所属组修改成功");
                                         $table.bootstrapTable('refresh');
                                     }, 3000);
 
@@ -349,17 +344,18 @@ function whichButton()
     },
     function () {
         $.ajax({
-                        url: "{{ request.path }}",
+                        url: '{% url "user_info" %}',
                         type: 'post',
                         dataType: 'text',
                         data: {
-                            request_type: 'create_user',
                             username: document.getElementById('username').value,
                             password: document.getElementById('password').value,
                             email: document.getElementById('email').value,
                         },
-                        success: function f() {
-
+                        success: function (data) {
+                            if ( data > 0 ){
+                                swal("创建出错", "用户名重复", "error");
+                            }else {
                                     var notify = $.notify({
                                             icon: 'fa fa-server',
                                             message:" 正在创建用户 ",
@@ -375,7 +371,7 @@ function whichButton()
                                         $table.bootstrapTable('refresh');
                                     }, 3000);
 
-                            },
+                            }},
                     })
     })
   }
