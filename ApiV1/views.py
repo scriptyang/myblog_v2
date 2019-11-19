@@ -45,7 +45,6 @@ class UserInfo(APIView):
         if request.GET.get('type') is not None:
             user_dict = {}
             user_data = []
-
             for l in list(User.objects.values()):
                 a = User.objects.get(username=l.get('username'))
                 user_dict['username'] = l.get('username')
@@ -67,12 +66,25 @@ class UserInfo(APIView):
 
     def post(self,request,*args,**kwargs):
         data = eval(sub('\[|\]', '', str(dict(request.POST))))
-        u_count = User.objects.filter(username=data.get('username')).count()
-        if u_count == 0:
-            print(data)
-            User.objects.create_superuser(**data)
-        return HttpResponse(u_count)
+        u = User.objects.filter(username=data.get('username'))
+        #判断提交的内容是否有误
+        if '' in data.values():
+            return HttpResponse(1)
 
+        if u.count() == 0:
+            User.objects.create_superuser(**data)
+            Create_u = User.objects.get(username=data.get('username'))
+            g_id = Group.objects.get(name='test')
+            g_id.user_set.add(Create_u.id)
+            return HttpResponse(0)
+
+        return HttpResponse(u.count())
+
+    def delete(self,request,*args,**kwargs):
+        data = eval(sub('\[|\]', '', str(dict(request.POST))))
+        u = User.objects.filter(username=data.get('username'),email=data.get('email'))
+        u.delete()
+        return HttpResponse(1)
 
 class ServiceInfo(APIView):
 

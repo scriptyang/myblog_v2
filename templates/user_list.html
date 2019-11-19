@@ -6,7 +6,6 @@
 
     {% block head_js %}
 
-
     {% endblock %}
 
 </head>
@@ -51,7 +50,6 @@
                                         <table id="bootstrap-table" class="table" data-sort-name="start_time"
                                                data-sort-order="desc">
                                             <thead>
-                                            <th data-field="state" data-checkbox="true"></th>
                                             <th data-field="username">用 户</th>
                                             <th data-field="email">邮 箱</th>
                                             <th data-field="groups">用户组</th>
@@ -254,12 +252,29 @@
 
                     $.ajax({
                         url: '{% url "user_info" %}',
-                        type: 'post',
-                        dataType: 'strings',
+                        type: 'delete',
+                        dataType: 'text',
                         data: {
-                            request_type: 'remove_data',
-                            id: row.id
+                            username: row.username,
+                            email: row.email
                         },
+                        success: function f() {
+                                    var notify = $.notify({
+                                            icon: 'fa fa-server',
+                                            message:" 正在删除用户 ",
+                                        },
+                                        {
+                                            type: 'info'
+                                        }
+                                    );
+
+                                    setTimeout(function () {
+                                        notify.update('type', 'error')
+                                        notify.update('error', "用户删除完成");
+                                        $table.bootstrapTable('refresh');
+                                    }, 3000);
+
+                            },
                     })
                 }
             };
@@ -354,7 +369,7 @@ function whichButton()
                         },
                         success: function (data) {
                             if ( data > 0 ){
-                                swal("创建出错", "用户名重复", "error");
+                                swal("创建出错", "用户名重复 OR 提交内容有误", "error");
                             }else {
                                     var notify = $.notify({
                                             icon: 'fa fa-server',
