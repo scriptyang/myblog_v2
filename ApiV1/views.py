@@ -14,7 +14,7 @@ class MyPers(BasePermission):
         if str(user_per) == 'admin' or request.method == 'GET':
             return True
         else:
-            return False
+            return HttpResponseRedirect('/')
 
 class LoginAuth(APIView):
 
