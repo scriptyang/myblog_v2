@@ -10,7 +10,10 @@ from rest_framework.permissions import BasePermission
 
 class MyPers(BasePermission):
     def has_permission(self, request, view):
-        user_per = Group.objects.get(user=request.user)
+        try:
+            user_per = Group.objects.get(user=request.user)
+        except:
+            return HttpResponseRedirect('/')
         if str(user_per) == 'admin' or request.method == 'GET':
             return True
         else:
